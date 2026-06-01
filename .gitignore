@@ -1,0 +1,23 @@
+# Visual Studio
+.vs/
+x64/
+Debug/
+Release/
+*.user
+*.suo
+*.VC.db
+*.VC.VC.opendb
+*.ipch
+*.log
+
+# Compilados
+*.exe
+*.obj
+*.pdb
+*.ilk
+*.idb
+
+# Carpetas generadas por el programa
+Disco_Inventory/
+Disco_Prueba/
+Disco/
