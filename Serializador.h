@@ -6,7 +6,10 @@
 #include <cstdint>
 #include <cstring>
 
-enum class Tipo_Dato {
+using namespace std;
+
+enum class Tipo_Dato 
+{
     INTEGER,
     FLOAT,
     BOOL,
@@ -14,24 +17,22 @@ enum class Tipo_Dato {
     VARCHAR
 };
 
-struct Columna {
-
-    std::string Nombre;
+struct Columna 
+{
+    string Nombre;
     Tipo_Dato Tipo;
     int Size;
 
-    Columna(std::string nombre, Tipo_Dato tipo, int size) {
-
+    Columna(string nombre, Tipo_Dato tipo, int size) 
+    {
         Nombre = nombre;
         Tipo = tipo;
         Size = size;
-
     }
-
 };
 
-Tipo_Dato String_a_Tipo(std::string Tipo) {
-
+Tipo_Dato String_a_Tipo(string Tipo) 
+{
     if (Tipo == "INTEGER") return Tipo_Dato::INTEGER;
     if (Tipo == "FLOAT") return Tipo_Dato::FLOAT;
     if (Tipo == "BOOL") return Tipo_Dato::BOOL;
@@ -41,8 +42,8 @@ Tipo_Dato String_a_Tipo(std::string Tipo) {
     return Tipo_Dato::VARCHAR;
 }
 
-std::string Tipo_a_String(Tipo_Dato Tipo) {
-
+string Tipo_a_String(Tipo_Dato Tipo) 
+{
     if (Tipo == Tipo_Dato::INTEGER) return "INTEGER";
     if (Tipo == Tipo_Dato::FLOAT) return "FLOAT";
     if (Tipo == Tipo_Dato::BOOL) return "BOOL";
@@ -52,8 +53,8 @@ std::string Tipo_a_String(Tipo_Dato Tipo) {
     return "VARCHAR";
 }
 
-bool Convertir_Bool(std::string Valor) {
-
+bool Convertir_Bool(string Valor) 
+{
     if (Valor == "1") return true;
     if (Valor == "true") return true;
     if (Valor == "TRUE") return true;
@@ -62,13 +63,13 @@ bool Convertir_Bool(std::string Valor) {
     return false;
 }
 
-class Serializador {
-
+class Serializador 
+{
 public:
 
-    std::string Serializar_Integer(int32_t Valor) {
-
-        std::string Bytes(4, '\0');
+    string Serializar_Integer(int32_t Valor) 
+    {
+        string Bytes(4, '\0');
 
         Bytes[0] = Valor & 0xFF;
         Bytes[1] = (Valor >> 8) & 0xFF;            
@@ -78,8 +79,8 @@ public:
         return Bytes;
     }
 
-    int32_t Deserializar_Integer(std::string Bytes){
-
+    int32_t Deserializar_Integer(string Bytes)
+    {
         int32_t Valor = 0;
 
         Valor |= (uint8_t)Bytes[0];
@@ -88,165 +89,127 @@ public:
         Valor |= (uint8_t)Bytes[3] << 24;
 
         return Valor;
-
     }
 
-    std::string Serializar_Float(float Valor) {
-
-        std::string Bytes(4, '\0');
-
-        std::memcpy(&Bytes[0], &Valor, 4);
-
+    string Serializar_Float(float Valor) 
+    {
+        string Bytes(4, '\0');
+        memcpy(&Bytes[0], &Valor, 4);
         return Bytes;
-
     }
 
-    float Deserializar_Float(std::string Bytes) {
-
+    float Deserializar_Float(string Bytes) 
+    {
         float Valor;
-
-        std::memcpy(&Valor, Bytes.data(), 4);
-
+        memcpy(&Valor, Bytes.data(), 4);
         return Valor;
-
     }
 
-    std::string Serializar_Bool(bool Valor) {
-
-        std::string Bytes(1, '\0');
-
+    string Serializar_Bool(bool Valor) 
+    {
+        string Bytes(1, '\0');
         Bytes[0] = Valor;
-
         return Bytes;
-
     }
 
-    bool Deserializar_Bool(std::string Bytes) {
-
+    bool Deserializar_Bool(string Bytes) 
+    {
         return Bytes[0] == 1;
-
     }
 
-    std::string Serializar_Char(char Valor) {
-
-        std::string Bytes(1, '\0');
-
+    string Serializar_Char(char Valor) 
+    {
+        string Bytes(1, '\0');
         Bytes[0] = Valor;
-
         return Bytes;
-
     }
 
-    char Deserializar_Char(std::string Bytes) {
-
+    char Deserializar_Char(string Bytes) 
+    {
         return Bytes[0];
-
     }
 
-    std::string Serializar_Varchar(std::string Valor, int Size_Varchar) {
-
-        if ((int)Valor.size() > Size_Varchar) {
-
+    string Serializar_Varchar(string Valor, int Size_Varchar) 
+    {
+        if ((int)Valor.size() > Size_Varchar) 
+        {
             Valor = Valor.substr(0, Size_Varchar);
-
         }
 
-        while ((int)Valor.size() < Size_Varchar) {
-
+        while ((int)Valor.size() < Size_Varchar) 
+        {
             Valor += '_';
-
         }
-
         return Valor;
-
     }
 
-    std::string Deserializar_Varchar(std::string Bytes) {
-
-        while (!Bytes.empty() && Bytes.back() == '_') {
-
+    string Deserializar_Varchar(string Bytes) 
+    {
+        while (!Bytes.empty() && Bytes.back() == '_') 
+        {
             Bytes.pop_back();
-
         }
-
         return Bytes;
-
     }
 
-    std::string Serializar_Valor(std::string Valor, Tipo_Dato Tipo, int Size_Op) {
-
-        if (Tipo == Tipo_Dato::INTEGER) {
-
-            return Serializar_Integer(std::stoi(Valor));
-
+    string Serializar_Valor(string Valor, Tipo_Dato Tipo, int Size_Op) 
+    {
+        if (Tipo == Tipo_Dato::INTEGER) 
+        {
+            return Serializar_Integer(stoi(Valor));
         }
 
-        else if (Tipo == Tipo_Dato::FLOAT) {
-
-            return Serializar_Float(std::stof(Valor));
-
+        else if (Tipo == Tipo_Dato::FLOAT) 
+        {
+            return Serializar_Float(stof(Valor));
         }
 
-        else if (Tipo == Tipo_Dato::BOOL) {
-
-            return Serializar_Bool(Valor == "1" || Valor == "True" || Valor == "TRUE");
-
+        else if (Tipo == Tipo_Dato::BOOL) 
+        {
+            return Serializar_Bool(Convertir_Bool(Valor));
         }
 
-        else if (Tipo == Tipo_Dato::CHAR) {
-
+        else if (Tipo == Tipo_Dato::CHAR) 
+        {
             if (Valor.empty()) return Serializar_Char('\0');
             return Serializar_Char(Valor[0]);
-
         }
         
-        else if (Tipo == Tipo_Dato::VARCHAR) {
-
+        else if (Tipo == Tipo_Dato::VARCHAR) 
+        {
             return Serializar_Varchar(Valor, Size_Op);
-
         }
-
         return "";
-
     }
 
 
-    std::string Deserializar_Valor(std::string Bytes, Tipo_Dato Tipo) {
-
-        if (Tipo == Tipo_Dato::INTEGER) {
-
-            return std::to_string(Deserializar_Integer(Bytes));
-
+    string Deserializar_Valor(string Bytes, Tipo_Dato Tipo) 
+    {
+        if (Tipo == Tipo_Dato::INTEGER) 
+        {
+            return to_string(Deserializar_Integer(Bytes));
         }
 
-        else if (Tipo == Tipo_Dato::FLOAT) {
-
-            return std::to_string(Deserializar_Float(Bytes));
-
+        else if (Tipo == Tipo_Dato::FLOAT) 
+        {
+            return to_string(Deserializar_Float(Bytes));
         }
 
-        else if (Tipo == Tipo_Dato::BOOL) {
-
+        else if (Tipo == Tipo_Dato::BOOL) 
+        {
             return Deserializar_Bool(Bytes) ? "true" : "false";
-
         }
 
-        else if (Tipo == Tipo_Dato::CHAR) {
-
-            return std::string(1, Deserializar_Char(Bytes));
-
+        else if (Tipo == Tipo_Dato::CHAR) 
+        {
+            return string(1, Deserializar_Char(Bytes));
         }
 
-        else if (Tipo == Tipo_Dato::VARCHAR) {
-
+        else if (Tipo == Tipo_Dato::VARCHAR) 
+        {
             return Deserializar_Varchar(Bytes);
-
         }
-
         return "";
-
     }
-
-
 };
 
